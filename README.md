@@ -50,19 +50,19 @@ OPENAI_API_KEY=your-api-key-here
 python main.py
 
 ### 🧠 How It Works
-Motion Detection
+- Motion Detection
 When the system detects motion at the door, it captures an image using the webcam or Raspberry Pi camera.
 
-AI Image Analysis
+- AI Image Analysis
 The image is sent to GPT-4 Vision via OpenAI’s API.
 
-Natural Language Description
+- Natural Language Description
 The response is a detailed, human-like description of what's seen at the door.
 
-Logging & Alerts (optional)
+- Logging & Alerts (optional)
 Descriptions can be stored locally and pushed to a mobile app, Home Assistant, or Telegram bot.
 
-📦 Folder Structure
+### 📦 Folder Structure
 smart-door-ai/
 ├── captured/            # Stores captured images
 ├── logs/                # Stores AI descriptions and timestamps
