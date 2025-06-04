@@ -1,0 +1,93 @@
+import cv2
+import pyttsx3
+import requests
+import time
+import os
+import threading
+from datetime import datetime
+from PIL import Image
+import torch
+from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
+
+# Initialize everything as before...
+model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+processor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+engine = pyttsx3.init()
+engine.setProperty('rate', 160)
+cap = cv2.VideoCapture(0)
+first_frame = None
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+TELEGRAM_BOT_TOKEN = 'YOUR_TOKEN'
+TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID'
+os.makedirs('captured_images', exist_ok=True)
+
+# Track last capture time
+last_capture_time = 0
+CAPTURE_COOLDOWN = 15  # seconds
+
+# Telegram sender
+def send_telegram_message(message):
+    url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
+    data = {'chat_id': TELEGRAM_CHAT_ID, 'text': message}
+    requests.post(url, data=data)
+
+# Image analysis (runs in thread)
+def analyze_and_notify(image_path):
+    try:
+        image = Image.open(image_path).convert("RGB")
+        pixel_values = processor(images=image, return_tensors="pt").pixel_values.to(device)
+        output_ids = model.generate(pixel_values, max_length=50, num_beams=4)
+        caption = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+        send_telegram_message(f"Motion detected at your door.\nDescription: {caption}")
+    except Exception as e:
+        send_telegram_message(f"Motion detected at your door.\nDescription failed: {e}")
+
+print("Smart Doorbell is running. Press 'q' to quit.")
+
+while True:
+    ret, frame = cap.read()
+    text = "No Motion"
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray_blur = cv2.GaussianBlur(gray, (21, 21), 0)
+
+    if first_frame is None:
+        first_frame = gray_blur
+        continue
+
+    delta_frame = cv2.absdiff(first_frame, gray_blur)
+    thresh = cv2.threshold(delta_frame, 30, 255, cv2.THRESH_BINARY)[1]
+    thresh_dilated = cv2.dilate(thresh, None, iterations=2)
+    contours, _ = cv2.findContours(thresh_dilated.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    motion_detected = any(cv2.contourArea(contour) > 5000 for contour in contours)
+
+    if motion_detected:
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+        now = time.time()
+
+        if len(faces) > 0 and now - last_capture_time > CAPTURE_COOLDOWN:
+            last_capture_time = now
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            image_path = f'captured_images/visitor_{timestamp}.jpg'
+            cv2.imwrite(image_path, frame)
+            engine.say("Someone is at the door!")
+            engine.runAndWait()
+            # Process in background
+            threading.Thread(target=analyze_and_notify, args=(image_path,)).start()
+
+    text = "Motion Detected" if motion_detected else "No Motion"
+    cv2.putText(frame, f"Status: {text}", (10, 20),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    cv2.imshow("Smart Doorbell", frame)
+
+    key = cv2.waitKey(1)
+    if key == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
