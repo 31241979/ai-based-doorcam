@@ -35,8 +35,7 @@ A next-generation smart surveillance prototype that **uses AI to describe what�
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
-
-```bash
+bash
 git clone https://github.com/yourusername/smart-door-ai.git
 cd smart-door-ai
 
@@ -74,22 +73,16 @@ smart-door-ai/
 └── requirements.txt     # Python dependencies
 
 🔐 Use Cases
-Home security system with smart alerts
-
-Accessibility tool for visually impaired individuals
-
-IoT-based visitor logbook
-
-AI-powered smart locks or access control
+- Home security system with smart alerts
+- Accessibility tool for visually impaired individuals
+- IoT-based visitor logbook
+- AI-powered smart locks or access control
 
 📲 Future Plans
- Face recognition + object detection hybrid
-
- Home Assistant integration via MQTT
-
- Flutter-based mobile notifications
-
- Live video streaming and audio response
+ - Face recognition + object detection hybrid
+ - Home Assistant integration via MQTT
+ - Flutter-based mobile notifications
+ - Live video streaming and audio response
 
 📄 License
 This project is licensed under the MIT License.
