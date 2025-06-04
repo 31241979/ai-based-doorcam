@@ -42,14 +42,14 @@ cd smart-door-ai
 ### 2. Install Dependencies
 pip install -r requirements.txt
 
-##3. Add Your OpenAI API Key
+## 3. Add Your OpenAI API Key
 Create a .env file in the root directory:
 OPENAI_API_KEY=your-api-key-here
 
 ## 4. Run the System
 python main.py
 
-🧠 How It Works
+### 🧠 How It Works
 Motion Detection
 When the system detects motion at the door, it captures an image using the webcam or Raspberry Pi camera.
 
@@ -72,27 +72,27 @@ smart-door-ai/
 ├── .env                 # OpenAI API key (not pushed to GitHub)
 └── requirements.txt     # Python dependencies
 
-🔐 Use Cases
+### 🔐 Use Cases
 - Home security system with smart alerts
 - Accessibility tool for visually impaired individuals
 - IoT-based visitor logbook
 - AI-powered smart locks or access control
 
-📲 Future Plans
+### 📲 Future Plans
  - Face recognition + object detection hybrid
  - Home Assistant integration via MQTT
  - Flutter-based mobile notifications
  - Live video streaming and audio response
 
-📄 License
+### 📄 License
 This project is licensed under the MIT License.
 
 
-🤝 Contributing
+### 🤝 Contributing
 Pull requests and feature suggestions are welcome! Please fork the repo and create a new branch for any changes.
 
 
-🙋‍♂️ Maintainer
+### 🙋‍♂️ Maintainer
 Developed by 31241979
 If you like this project, consider giving it a ⭐ on GitHub!
 
