@@ -63,14 +63,7 @@ The response is a detailed, human-like description of what's seen at the door.
 Descriptions can be stored locally and pushed to a mobile app, Home Assistant, or Telegram bot.
 
 ### 📦 Folder Structure
-smart-door-ai/
-├── captured/            # Stores captured images
-├── logs/                # Stores AI descriptions and timestamps
-├── main.py              # Core script
-├── vision.py            # Handles image processing and API call
-├── motion.py            # Handles motion detection
-├── .env                 # OpenAI API key (not pushed to GitHub)
-└── requirements.txt     # Python dependencies
+<pre> smart-door-ai/ ├── captured/ # Stores captured images ├── logs/ # Stores AI descriptions and timestamps ├── main.py # Core script ├── vision.py # Handles image processing and API call ├── motion.py # Handles motion detection ├── .env # OpenAI API key (not pushed to GitHub) └── requirements.txt # Python dependencies </pre>
 
 ### 🔐 Use Cases
 - Home security system with smart alerts
